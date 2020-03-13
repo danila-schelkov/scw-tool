@@ -1,6 +1,6 @@
 # scw2dae
 COLLADA Animation and model || so so version
-## IF U WANT RUN THIS SCRIPT U NEED VISUAL STUDIO and MODULE 'mathutils'
+## IF U WANT RUN THIS SCRIPT U NEED VISUAL STUDIO and MODULES 'mathutils', 'lxml', 'math'
 
 # How to use
 - Run 'scw2dae.py' to create folders
