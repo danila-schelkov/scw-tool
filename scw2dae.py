@@ -316,6 +316,12 @@ class ScwParse(Reader):
             open(f'dae/{filename[:-4]}.dae', 'wb').write(tostring(ElementTree(COLLADA), pretty_print=True, xml_declaration=True))
 
 
+if not os.path.isdir('scw/'):
+    os.mkdir('scw/')
+    
+if not os.path.isdir('dae/'):
+    os.mkdir('dae/')
+
 for filename in os.listdir('scw/'):
     if filename.endswith('.scw'):
         ScwParse(open(f'scw/{filename}', 'rb').read())
