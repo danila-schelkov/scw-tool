@@ -27,14 +27,6 @@ class Matrix:
                     for i in range(4):
                         s += self.to_array()[z][i] * other.to_array()[i][j]
                     t.append(s)
-                    # [[1, 1, 1, 0],
-                    #  [1, 1, 1, 0],
-                    #  [1, 1, 1, 0],
-                    #  [0, 0, 0, 1]]
-                    # [[0, 0, 0, 1],
-                    #  [0, 0, 0, 1],
-                    #  [0, 0, 0, 1],
-                    #  [1, 1, 1, 0]]
                 new_matrix.append(t)
             return Matrix(new_matrix)
 
@@ -255,7 +247,7 @@ class ScwReader(Reader):
             parent = self.readString()
             has_geom = self.readUShort()
             if has_geom == 1:
-                node = SubElement(self.visual_scene if parent == '' else self.visual_scene.find(f'.//*[@id="{parent}"]'), 'node', id=name, type='NODE')
+                node = SubElement((self.visual_scene if parent == '' else (self.visual_scene.find(f'.//*[@id="{parent}"]') if self.visual_scene.find(f'.//*[@id="{parent}"]') is not None else self.visual_scene)), 'node', id=name, type='NODE')
                 instance_controller = SubElement(node, 'instance_controller', url=f'#{name}-cont')
                 technique_common = SubElement(SubElement(instance_controller, 'bind_material'), 'technique_common')
                 geom_type = self.read(4).decode('utf-8')
@@ -292,7 +284,8 @@ class ScwReader(Reader):
                         zS = self.readFloat()
                     matrix = (Matrix().Translation((xT, yT, zT)) @ Matrix().Rotation(w, (xR, yR, zR)) @ Matrix().Scale((xS, yS, zS))).to_array()
                     if frame_id == 0:
-                        node = SubElement(self.visual_scene if parent == '' else self.visual_scene.find(f'.//*[@id="{parent}"]'), 'node', id=name, type='JOINT' if name in self.joint_names_global else 'NODE')
+                        if has_geom != 1:
+                            node = SubElement(self.visual_scene if parent == '' else self.visual_scene.find(f'.//*[@id="{parent}"]'), 'node', id=name, type='JOINT' if name in self.joint_names_global else 'NODE')
                         SubElement(node, 'matrix', sid='transform').text = ' '.join([' '.join([str(x1) for x1 in x]) for x in matrix])
                     if frame_id > 0:
                         matrixes.append(' '.join([' '.join([str(x1) for x1 in x]) for x in matrix]))
@@ -351,7 +344,7 @@ class ScwReader(Reader):
                 self.CAME()
             elif chunkname == 'NODE':
                 self.NODE()
-        open(f'dae/{collada_name}', 'wb').write(tostring(collada, pretty_print=True, xml_declaration=True, standalone=True))
+        open(f'dae/{collada_name}', 'wb').write(tostring(collada, pretty_print=True, xml_declaration=True))
 
 
 if __name__ == '__main__':
@@ -360,7 +353,14 @@ if __name__ == '__main__':
     if not os.path.isdir('dae/'):
         os.mkdir('dae/')
     chunks = []
-    files = ['8bit_geo.scw', '8bit_win.scw']
+    files = []
+    main_filename = input('Main file name: ')
+    while main_filename == '':
+        main_filename = input('Main file name: ')
+    files.append(main_filename)
+    second_filename = input('Second file name (animation) (If you don\'t want the animation to be, leave the field blank and press Enter): ')
+    if second_filename != '':
+        files.append(second_filename)
     collada_name = files[0][:-4] + '.dae'
     for filename in files:
         filepath = f'scw/{filename}'
