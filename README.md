@@ -1,9 +1,13 @@
 # scw2dae
-COLLADA Animation and model
+COLLADA Animation and Model
+
+# To use you need:
+- Install the module "Requests"
+- and preferably Python version 3.7 or later
 
 # How to use
 - Run 'scw2dae.py' to create folders
-- Put scw files in folder 'scw/'
+- Put scw files in the “scw” folder
 - Run 'scw2dae.py' again
 
-<p>Congratulations!</p>
+<P> Congratulations! </ P>
