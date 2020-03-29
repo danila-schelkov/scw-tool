@@ -2,7 +2,7 @@
 COLLADA Animation and Model
 
 # To use you need:
-- Install the module "Requests"
+- Install the module "Requests" and "lxml"
 - and preferably Python version 3.7 or later
 
 # How to use
