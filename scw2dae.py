@@ -69,71 +69,71 @@ class ScwReader(Reader):
 
     def MATE(self):
         name = self.readString()
-#         effect = SubElement(self.library_effects, 'effect', id=f'{name}-effect')
-#         profile = SubElement(SubElement(effect, 'profile_COMMON'), 'technique', sid='common')
-#         phong = SubElement(profile, 'phong')
-#         emission = SubElement(phong, 'emission')
-#         ambient = SubElement(phong, 'ambient')
-#         diffuse = SubElement(phong, 'diffuse')
-#         shader = self.readString()
-#         self.readUByte()
-#         if self.readUByte() == 1:
-#             ambient_tex = self.readString()
-#             if ambient_tex != '.':
-#                 SubElement(ambient, 'texture', texture=f'{ambient_tex}-sampler')
-#         else:
-#             a = self.readUByte() / 255
-#             r = self.readUByte() / 255
-#             g = self.readUByte() / 255
-#             b = self.readUByte() / 255
-#             SubElement(ambient, 'color').text = f'{r} {g} {b} {a}'
-#         if self.readUByte() == 1:
-#             diffuse_tex = self.readString()
-#             if diffuse_tex != '.':
-#                 SubElement(diffuse, 'texture', texture=f'{diffuse_tex}-sampler')
-#         else:
-#             a = self.readUByte() / 255
-#             r = self.readUByte() / 255
-#             g = self.readUByte() / 255
-#             b = self.readUByte() / 255
-#             SubElement(diffuse, 'color').text = f'{r} {g} {b} {a}'
-#         if self.readUByte() == 1:
-#             stencil_tex = self.readString()
-#         else:
-#             a = self.readUByte() / 255
-#             r = self.readUByte() / 255
-#             g = self.readUByte() / 255
-#             b = self.readUByte() / 255
-#         self.readString()
-#         self.readString()
-#         if self.readUByte() == 1:
-#             colorize_tex = self.readString()
-#         else:
-#             a = self.readUByte() / 255
-#             r = self.readUByte() / 255
-#             g = self.readUByte() / 255
-#             b = self.readUByte() / 255
-#         if self.readUByte() == 1:
-#             emission_tex = self.readString()
-#             if emission_tex != '.':
-#                 SubElement(emission, 'texture', texture=f'{emission_tex}-sampler')
-#         else:
-#             a = self.readUByte() / 255
-#             r = self.readUByte() / 255
-#             g = self.readUByte() / 255
-#             b = self.readUByte() / 255
-#             SubElement(emission, 'color').text = f'{r} {g} {b} {a}'
-#         alpha_texture = self.readString()
-#         self.readFloat()
-#         self.readFloat()
-#         lightmap_diffuse = self.readString()
-#         lightmap_specular = self.readString()
-#         a = self.readUByte() / 255
-#         r = self.readUByte()
-#         g = self.readUByte()
-#         b = self.readUByte()
-#         SubElement(SubElement(self.library_materials, 'material', id=name), 'instance_effect', url=f'#{name}-effect')
-        SubElement(self.library_materials, 'material', id=name)
+        # effect = SubElement(self.library_effects, 'effect', id=f'{name}-effect')
+        # profile = SubElement(SubElement(effect, 'profile_COMMON'), 'technique', sid='common')
+        # phong = SubElement(profile, 'phong')
+        # emission = SubElement(phong, 'emission')
+        # ambient = SubElement(phong, 'ambient')
+        # diffuse = SubElement(phong, 'diffuse')
+        # shader = self.readString()
+        # self.readUByte()
+        # if self.readUByte() == 1:
+        #     ambient_tex = self.readString()
+        #     if ambient_tex != '.':
+        #         SubElement(ambient, 'texture', texture=f'{ambient_tex}-sampler')
+        # else:
+        #     a = self.readUByte() / 255
+        #     r = self.readUByte() / 255
+        #     g = self.readUByte() / 255
+        #     b = self.readUByte() / 255
+        #     SubElement(ambient, 'color').text = f'{r} {g} {b} {a}'
+        # if self.readUByte() == 1:
+        #     diffuse_tex = self.readString()
+        #     if diffuse_tex != '.':
+        #         SubElement(diffuse, 'texture', texture=f'{diffuse_tex}-sampler')
+        # else:
+        #     a = self.readUByte() / 255
+        #     r = self.readUByte() / 255
+        #     g = self.readUByte() / 255
+        #     b = self.readUByte() / 255
+        #     SubElement(diffuse, 'color').text = f'{r} {g} {b} {a}'
+        # if self.readUByte() == 1:
+        #     stencil_tex = self.readString()
+        # else:
+        #     a = self.readUByte() / 255
+        #     r = self.readUByte() / 255
+        #     g = self.readUByte() / 255
+        #     b = self.readUByte() / 255
+        # self.readString()
+        # self.readString()
+        # if self.readUByte() == 1:
+        #     colorize_tex = self.readString()
+        # else:
+        #     a = self.readUByte() / 255
+        #     r = self.readUByte() / 255
+        #     g = self.readUByte() / 255
+        #     b = self.readUByte() / 255
+        # if self.readUByte() == 1:
+        #     emission_tex = self.readString()
+        #     if emission_tex != '.':
+        #         SubElement(emission, 'texture', texture=f'{emission_tex}-sampler')
+        # else:
+        #     a = self.readUByte() / 255
+        #     r = self.readUByte() / 255
+        #     g = self.readUByte() / 255
+        #     b = self.readUByte() / 255
+        #     SubElement(emission, 'color').text = f'{r} {g} {b} {a}'
+        # alpha_texture = self.readString()
+        # self.readFloat()
+        # self.readFloat()
+        # lightmap_diffuse = self.readString()
+        # lightmap_specular = self.readString()
+        # a = self.readUByte() / 255
+        # r = self.readUByte()
+        # g = self.readUByte()
+        # b = self.readUByte()
+        material = SubElement(self.library_materials, 'material', id=name)
+        # SubElement(material, 'instance_effect', url=f'#{name}-effect')
 
     def GEOM(self):
         name = self.readString()
@@ -157,64 +157,67 @@ class ScwReader(Reader):
             accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-{vertex_name.lower()}-array', count=f'{count}', stride=f'{stride}')
             for param_name in {'POSITION': ['X', 'Y', 'Z'], 'NORMAL': ['X', 'Y', 'Z'], 'TEXCOORD': ['S', 'T'], 'COLOR': ['R', 'G', 'B', 'A']}[vertex_name]:
                 SubElement(accessor, 'param', name=param_name, type='float')
-        controller = SubElement(self.library_controllers, 'controller', id=f'{name}-cont')
-        skin = SubElement(controller, 'skin', source=f'#{name}')
-        if self.readByte() == 1:
+        have_bind_matrix = self.readByte()
+        if have_bind_matrix == 1:
+            controller = SubElement(self.library_controllers, 'controller', id=f'{name}-cont')
+            skin = SubElement(controller, 'skin', source=f'#{name}')
             SubElement(skin, 'bind_shape_matrix').text = ' '.join([str(self.readFloat()) for x in range(16)])
         joints_count = self.readByte()
-        joints_name = []
-        joints_matrix = []
-        for x in range(joints_count):
-            joint_name = self.readString()
-            joints_name.append(joint_name)
-            self.joint_names_global.append(joint_name)
-            joints_matrix.append([str(self.readFloat()) for x in range(16)])
-        joints_matrix = [' '.join(matrix) for matrix in joints_matrix]
-        source = SubElement(skin, 'source', id=f'{name}-joints')
-        array = SubElement(source, 'Name_array', id=f'{name}-joints-array', count=f'{joints_count}')
-        array.text = ' '.join(joints_name)
-        accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-joints-array', count=f'{joints_count}', stride='1')
-        SubElement(accessor, 'param', name='JOINT', type='name')
-        source = SubElement(skin, 'source', id=f'{name}-matrix')
-        array = SubElement(source, 'float_array', id=f'{name}-matrix-array', count=f'{len(joints_matrix)}')
-        array.text = ' '.join(joints_matrix)
-        accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-matrix-array', count=f'{joints_count}', stride='16')
-        SubElement(accessor, 'param', name='TRANSFORM', type='float4x4')
+        if have_bind_matrix:
+            joints_name = []
+            joints_matrix = []
+            for x in range(joints_count):
+                joint_name = self.readString()
+                joints_name.append(joint_name)
+                self.joint_names_global.append(joint_name)
+                joints_matrix.append([str(self.readFloat()) for x in range(16)])
+            joints_matrix = [' '.join(matrix) for matrix in joints_matrix]
+            source = SubElement(skin, 'source', id=f'{name}-joints')
+            array = SubElement(source, 'Name_array', id=f'{name}-joints-array', count=f'{joints_count}')
+            array.text = ' '.join(joints_name)
+            accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-joints-array', count=f'{joints_count}', stride='1')
+            SubElement(accessor, 'param', name='JOINT', type='name')
+            source = SubElement(skin, 'source', id=f'{name}-matrix')
+            array = SubElement(source, 'float_array', id=f'{name}-matrix-array', count=f'{len(joints_matrix)}')
+            array.text = ' '.join(joints_matrix)
+            accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-matrix-array', count=f'{joints_count}', stride='16')
+            SubElement(accessor, 'param', name='TRANSFORM', type='float4x4')
         weights_count = self.readUInt32()
-        vcount = []
-        weights = []
-        vertex_weights = []
-        for x in range(weights_count):
-            vcount.append(0)
-            jA = self.readUByte()
-            jB = self.readUByte()
-            jC = self.readUByte()
-            jD = self.readUByte()
-            wA = self.readUShort()
-            wB = self.readUShort()
-            wC = self.readUShort()
-            wD = self.readUShort()
-            weight = [[jA, wA], [jB, wB], [jC, wC], [jD, wD]]
-            for pair in weight:
-                if pair[0] != 0:
-                    vcount[x] += 1
-                    vertex_weights.append(pair[0])
-                    if pair[1] not in weights:
-                        weights.append(pair[1])
-                    vertex_weights.append(weights.index(pair[1]))
-        source = SubElement(skin, 'source', id=f'{name}-weight')
-        array = SubElement(source, 'float_array', id=f'{name}-weight-array', count=f'{len(weights)}')
-        array.text = ' '.join([str(weight/65535) for weight in weights])
-        accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-weight-array', count=f'{len(weights)}', stride='1')
-        SubElement(accessor, 'param', name='WEIGHT', type='float')
-        joints = SubElement(skin, 'joints')
-        SubElement(joints, 'input', semantic='JOINT', source=f'#{name}-joints')
-        SubElement(joints, 'input', semantic='INV_BIND_MATRIX', source=f'#{name}-matrix')
-        v_w = SubElement(skin, 'vertex_weights', count=f'{weights_count}')
-        SubElement(v_w, 'input', semantic='JOINT', source=f'#{name}-joints', offset='0')
-        SubElement(v_w, 'input', semantic='WEIGHT', source=f'#{name}-weight', offset='1')
-        SubElement(v_w, 'vcount').text = ' '.join([str(integer) for integer in vcount])
-        SubElement(v_w, 'v').text = ' '.join([str(integer) for integer in vertex_weights])
+        if have_bind_matrix:
+            vcount = []
+            weights = []
+            vertex_weights = []
+            for x in range(weights_count):
+                vcount.append(0)
+                jA = self.readUByte()
+                jB = self.readUByte()
+                jC = self.readUByte()
+                jD = self.readUByte()
+                wA = self.readUShort()
+                wB = self.readUShort()
+                wC = self.readUShort()
+                wD = self.readUShort()
+                weight = [[jA, wA], [jB, wB], [jC, wC], [jD, wD]]
+                for pair in weight:
+                    if pair[0] != 0:
+                        vcount[x] += 1
+                        vertex_weights.append(pair[0])
+                        if pair[1] not in weights:
+                            weights.append(pair[1])
+                        vertex_weights.append(weights.index(pair[1]))
+            source = SubElement(skin, 'source', id=f'{name}-weight')
+            array = SubElement(source, 'float_array', id=f'{name}-weight-array', count=f'{len(weights)}')
+            array.text = ' '.join([str(weight/65535) for weight in weights])
+            accessor = SubElement(SubElement(source, 'technique_common'), 'accessor', source=f'#{name}-weight-array', count=f'{len(weights)}', stride='1')
+            SubElement(accessor, 'param', name='WEIGHT', type='float')
+            joints = SubElement(skin, 'joints')
+            SubElement(joints, 'input', semantic='JOINT', source=f'#{name}-joints')
+            SubElement(joints, 'input', semantic='INV_BIND_MATRIX', source=f'#{name}-matrix')
+            v_w = SubElement(skin, 'vertex_weights', count=f'{weights_count}')
+            SubElement(v_w, 'input', semantic='JOINT', source=f'#{name}-joints', offset='0')
+            SubElement(v_w, 'input', semantic='WEIGHT', source=f'#{name}-weight', offset='1')
+            SubElement(v_w, 'vcount').text = ' '.join([str(integer) for integer in vcount])
+            SubElement(v_w, 'v').text = ' '.join([str(integer) for integer in vertex_weights])
         materials_count = self.readUByte()
         SubElement(SubElement(mesh, 'vertices', id=f'{name}-vertices'), 'input', semantic='POSITION', source=f'#{name}-position')
         for x in range(materials_count):
@@ -249,10 +252,15 @@ class ScwReader(Reader):
             has_geom = self.readUShort()
             if has_geom == 1:
                 node = SubElement((self.visual_scene if parent == '' else (self.visual_scene.find(f'.//*[@id="{parent}"]') if self.visual_scene.find(f'.//*[@id="{parent}"]') is not None else self.visual_scene)), 'node', id=name, type='NODE')
-                instance_controller = SubElement(node, 'instance_controller', url=f'#{name}-cont')
-                technique_common = SubElement(SubElement(instance_controller, 'bind_material'), 'technique_common')
                 geom_type = self.read(4).decode('utf-8')
                 geom_name = self.readString()
+
+                if geom_type == 'CONT':
+                    instance_controller = SubElement(node, 'instance_controller', url=f'#{geom_name}-cont')
+                    technique_common = SubElement(SubElement(instance_controller, 'bind_material'), 'technique_common')
+                elif geom_type == 'GEOM':
+                    bind_material = SubElement(node, 'instance_geometry', url=f'#{geom_name}')
+                    technique_common = SubElement(SubElement(bind_material, 'bind_material'), 'technique_common')
                 materials_count = self.readUShort()
                 for x1 in range(materials_count):
                     symbol = self.readString()
@@ -284,7 +292,7 @@ class ScwReader(Reader):
                     if settings[3] == 1 or frame_number == 0:
                         zS = self.readFloat()
                     matrix = (Matrix().Translation((xT, yT, zT)) @ Matrix().Rotation(w, (xR, yR, zR)) @ Matrix().Scale((xS, yS, zS))).to_array()
-                    if (frame_id == 0) or ((has_geom) and (frame_number==0)):
+                    if frame_id == 0 or (has_geom and frame_number == 0):
                         if has_geom != 1:
                             node = SubElement(self.visual_scene if parent == '' else self.visual_scene.find(f'.//*[@id="{parent}"]'), 'node', id=name, type='JOINT' if name in self.joint_names_global else 'NODE')
                         SubElement(node, 'matrix', sid='transform').text = ' '.join([' '.join([str(x1) for x1 in x]) for x in matrix])
@@ -317,7 +325,7 @@ class ScwReader(Reader):
         self.joint_names_global = []
         collada = Element('COLLADA', xmlns='http://www.collada.org/2005/11/COLLADASchema', version='1.4.1')
         SubElement(SubElement(collada, 'asset'), 'up_axis').text = 'Y_UP'
-#         self.library_effects = SubElement(collada, 'library_effects')  # TODO: fix effects
+        # self.library_effects = SubElement(collada, 'library_effects')  # TODO: effects
         self.library_materials = SubElement(collada, 'library_materials')
         self.library_geometries = SubElement(collada, 'library_geometries')
         self.library_controllers = SubElement(collada, 'library_controllers')
@@ -330,14 +338,13 @@ class ScwReader(Reader):
             chunkname = self.read(4).decode('utf-8')
             if chunkname == 'HEAD':
                 self.version, file = self.HEAD()
-                if file != '':
-                    filedata = Downloader().get(file)
-                    chunkreader = Reader(filedata[4:])
-                    i = 0
-                    while i < len(filedata) - 4:
-                        length = chunkreader.readUInt32() + 8
-                        i += length + 4
-                        chunks.append(chunkreader.read(length))
+                filedata = Downloader().get(file)
+                chunkreader = Reader(filedata[4:])
+                i = 0
+                while i < len(filedata) - 4:
+                    length = chunkreader.readUInt32() + 8
+                    i += length + 4
+                    chunks.append(chunkreader.read(length))
             elif chunkname == 'MATE':
                 self.MATE()
             elif chunkname == 'GEOM':
