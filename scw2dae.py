@@ -69,70 +69,71 @@ class ScwReader(Reader):
 
     def MATE(self):
         name = self.readString()
-        effect = SubElement(self.library_effects, 'effect', id=f'{name}-effect')
-        profile = SubElement(SubElement(effect, 'profile_COMMON'), 'technique', sid='common')
-        phong = SubElement(profile, 'phong')
-        emission = SubElement(phong, 'emission')
-        ambient = SubElement(phong, 'ambient')
-        diffuse = SubElement(phong, 'diffuse')
-        shader = self.readString()
-        self.readUByte()
-        if self.readUByte() == 1:
-            ambient_tex = self.readString()
-            if ambient_tex != '.':
-                SubElement(ambient, 'texture', texture=f'{ambient_tex}-sampler')
-        else:
-            a = self.readUByte() / 255
-            r = self.readUByte() / 255
-            g = self.readUByte() / 255
-            b = self.readUByte() / 255
-            SubElement(ambient, 'color').text = f'{r} {g} {b} {a}'
-        if self.readUByte() == 1:
-            diffuse_tex = self.readString()
-            if diffuse_tex != '.':
-                SubElement(diffuse, 'texture', texture=f'{diffuse_tex}-sampler')
-        else:
-            a = self.readUByte() / 255
-            r = self.readUByte() / 255
-            g = self.readUByte() / 255
-            b = self.readUByte() / 255
-            SubElement(diffuse, 'color').text = f'{r} {g} {b} {a}'
-        if self.readUByte() == 1:
-            stencil_tex = self.readString()
-        else:
-            a = self.readUByte() / 255
-            r = self.readUByte() / 255
-            g = self.readUByte() / 255
-            b = self.readUByte() / 255
-        self.readString()
-        self.readString()
-        if self.readUByte() == 1:
-            colorize_tex = self.readString()
-        else:
-            a = self.readUByte() / 255
-            r = self.readUByte() / 255
-            g = self.readUByte() / 255
-            b = self.readUByte() / 255
-        if self.readUByte() == 1:
-            emission_tex = self.readString()
-            if emission_tex != '.':
-                SubElement(emission, 'texture', texture=f'{emission_tex}-sampler')
-        else:
-            a = self.readUByte() / 255
-            r = self.readUByte() / 255
-            g = self.readUByte() / 255
-            b = self.readUByte() / 255
-            SubElement(emission, 'color').text = f'{r} {g} {b} {a}'
-        alpha_texture = self.readString()
-        self.readFloat()
-        self.readFloat()
-        lightmap_diffuse = self.readString()
-        lightmap_specular = self.readString()
-        a = self.readUByte() / 255
-        r = self.readUByte()
-        g = self.readUByte()
-        b = self.readUByte()
-        SubElement(SubElement(self.library_materials, 'material', id=name), 'instance_effect', url=f'#{name}-effect')
+#         effect = SubElement(self.library_effects, 'effect', id=f'{name}-effect')
+#         profile = SubElement(SubElement(effect, 'profile_COMMON'), 'technique', sid='common')
+#         phong = SubElement(profile, 'phong')
+#         emission = SubElement(phong, 'emission')
+#         ambient = SubElement(phong, 'ambient')
+#         diffuse = SubElement(phong, 'diffuse')
+#         shader = self.readString()
+#         self.readUByte()
+#         if self.readUByte() == 1:
+#             ambient_tex = self.readString()
+#             if ambient_tex != '.':
+#                 SubElement(ambient, 'texture', texture=f'{ambient_tex}-sampler')
+#         else:
+#             a = self.readUByte() / 255
+#             r = self.readUByte() / 255
+#             g = self.readUByte() / 255
+#             b = self.readUByte() / 255
+#             SubElement(ambient, 'color').text = f'{r} {g} {b} {a}'
+#         if self.readUByte() == 1:
+#             diffuse_tex = self.readString()
+#             if diffuse_tex != '.':
+#                 SubElement(diffuse, 'texture', texture=f'{diffuse_tex}-sampler')
+#         else:
+#             a = self.readUByte() / 255
+#             r = self.readUByte() / 255
+#             g = self.readUByte() / 255
+#             b = self.readUByte() / 255
+#             SubElement(diffuse, 'color').text = f'{r} {g} {b} {a}'
+#         if self.readUByte() == 1:
+#             stencil_tex = self.readString()
+#         else:
+#             a = self.readUByte() / 255
+#             r = self.readUByte() / 255
+#             g = self.readUByte() / 255
+#             b = self.readUByte() / 255
+#         self.readString()
+#         self.readString()
+#         if self.readUByte() == 1:
+#             colorize_tex = self.readString()
+#         else:
+#             a = self.readUByte() / 255
+#             r = self.readUByte() / 255
+#             g = self.readUByte() / 255
+#             b = self.readUByte() / 255
+#         if self.readUByte() == 1:
+#             emission_tex = self.readString()
+#             if emission_tex != '.':
+#                 SubElement(emission, 'texture', texture=f'{emission_tex}-sampler')
+#         else:
+#             a = self.readUByte() / 255
+#             r = self.readUByte() / 255
+#             g = self.readUByte() / 255
+#             b = self.readUByte() / 255
+#             SubElement(emission, 'color').text = f'{r} {g} {b} {a}'
+#         alpha_texture = self.readString()
+#         self.readFloat()
+#         self.readFloat()
+#         lightmap_diffuse = self.readString()
+#         lightmap_specular = self.readString()
+#         a = self.readUByte() / 255
+#         r = self.readUByte()
+#         g = self.readUByte()
+#         b = self.readUByte()
+#         SubElement(SubElement(self.library_materials, 'material', id=name), 'instance_effect', url=f'#{name}-effect')
+        SubElement(self.library_materials, 'material', id=name)
 
     def GEOM(self):
         name = self.readString()
@@ -283,7 +284,7 @@ class ScwReader(Reader):
                     if settings[3] == 1 or frame_number == 0:
                         zS = self.readFloat()
                     matrix = (Matrix().Translation((xT, yT, zT)) @ Matrix().Rotation(w, (xR, yR, zR)) @ Matrix().Scale((xS, yS, zS))).to_array()
-                    if frame_id == 0:
+                    if (frame_id == 0) or ((has_geom) and (frame_number==0)):
                         if has_geom != 1:
                             node = SubElement(self.visual_scene if parent == '' else self.visual_scene.find(f'.//*[@id="{parent}"]'), 'node', id=name, type='JOINT' if name in self.joint_names_global else 'NODE')
                         SubElement(node, 'matrix', sid='transform').text = ' '.join([' '.join([str(x1) for x1 in x]) for x in matrix])
@@ -316,7 +317,7 @@ class ScwReader(Reader):
         self.joint_names_global = []
         collada = Element('COLLADA', xmlns='http://www.collada.org/2005/11/COLLADASchema', version='1.4.1')
         SubElement(SubElement(collada, 'asset'), 'up_axis').text = 'Y_UP'
-        self.library_effects = SubElement(collada, 'library_effects')
+#         self.library_effects = SubElement(collada, 'library_effects')  # TODO: fix effects
         self.library_materials = SubElement(collada, 'library_materials')
         self.library_geometries = SubElement(collada, 'library_geometries')
         self.library_controllers = SubElement(collada, 'library_controllers')
@@ -329,13 +330,14 @@ class ScwReader(Reader):
             chunkname = self.read(4).decode('utf-8')
             if chunkname == 'HEAD':
                 self.version, file = self.HEAD()
-                filedata = Downloader().get(file)
-                chunkreader = Reader(filedata[4:])
-                i = 0
-                while i < len(filedata) - 4:
-                    length = chunkreader.readUInt32() + 8
-                    i += length + 4
-                    chunks.append(chunkreader.read(length))
+                if file != '':
+                    filedata = Downloader().get(file)
+                    chunkreader = Reader(filedata[4:])
+                    i = 0
+                    while i < len(filedata) - 4:
+                        length = chunkreader.readUInt32() + 8
+                        i += length + 4
+                        chunks.append(chunkreader.read(length))
             elif chunkname == 'MATE':
                 self.MATE()
             elif chunkname == 'GEOM':
