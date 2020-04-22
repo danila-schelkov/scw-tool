@@ -1,9 +1,10 @@
 # scw2dae
 COLLADA Animation and Model
 
-# To use you need:
-- Install the module "Requests" and "lxml"
-- and preferably Python version 3.7 or later
+Python version - 3.7
+Module needs - Requests, Lxml
+pip install requests
+pip install lxml
 
 # How to use
 - Run 'scw2dae.py' to create folders
