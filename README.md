@@ -1,8 +1,8 @@
 # scw2dae
 COLLADA Animation and Model
 
-Python version - 3.7
-Module needs - Requests, Lxml
+<p>Python version - 3.7</p> <br/>
+<p>Module needs - Requests, Lxml</p> <br/>
 pip install requests
 pip install lxml
 
