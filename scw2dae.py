@@ -17,7 +17,7 @@ class Matrix:
 
     def __matmul__(self, other):
         if len(self.to_array()) != len(other.to_array()[0]) or len(self.to_array()[0]) != len(other.to_array()):
-            print("Матрицы не могут быть перемножены")
+            print("Matrix can't multiple!")
         else:
             new_matrix = []
             for z in range(4):
@@ -199,7 +199,7 @@ class ScwReader(Reader):
                 wD = self.readUShort()
                 weight = [[jA, wA], [jB, wB], [jC, wC], [jD, wD]]
                 for pair in weight:
-                    if pair[0] != 0:
+                    if pair[1] != 0:
                         vcount[x] += 1
                         vertex_weights.append(pair[0])
                         if pair[1] not in weights:
@@ -232,11 +232,11 @@ class ScwReader(Reader):
             if mode[0] > 2: SubElement(triangles, 'input', semantic='TEXCOORD', source=f'#{name}-texcoord', offset='2', set='0')
             for x1 in range(triangles_count):
                 for x2 in range(3):
-                    polygones.append(self.readShort() if mode[1] == 2 else self.readByte())  # POSITION
+                    polygones.append(self.readUShort() if mode[1] == 2 else self.readUByte())  # POSITION
                     if mode[0] > 1:
-                        polygones.append(self.readShort() if mode[1] == 2 else self.readByte())  # NORMAL
+                        polygones.append(self.readUShort() if mode[1] == 2 else self.readUByte())  # NORMAL
                         if mode[0] > 2:
-                            polygones.append(self.readShort() if mode[1] == 2 else self.readByte())  # TEXCOORD
+                            polygones.append(self.readUShort() if mode[1] == 2 else self.readUByte())  # TEXCOORD
                             if mode[0] > 3:
                                 vc = self.readShort if mode[1] == 2 else self.readByte()
             SubElement(triangles, 'p').text = ' '.join([str(integer) for integer in polygones])
