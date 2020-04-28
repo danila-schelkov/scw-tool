@@ -17,10 +17,7 @@ class Reader(BufferedReader):
 
     def readInteger32(self):
         return unpack('>i', self.read(4))[0]
-
-    def readUnsignedFloat(self):
-        return unpack('>F', self.read(4))[0]
-
+    
     def readFloat(self):
         return unpack('>f', self.read(4))[0]
 
@@ -49,7 +46,6 @@ class Reader(BufferedReader):
     readInt64 = readInteger64
     readUInt32 = readUnsignedInteger32
     readInt32 = readInteger32
-    readUFloat = readUnsignedFloat
     readUShort = readUnsignedShort
     readUByte = readUnsignedByte
     readUInt = readUnsignedInteger
