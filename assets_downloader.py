@@ -49,9 +49,9 @@ class Writer:
     def sendPacket(self):
         self.writeInt32(2)
         self.writeInt32(11)
-        self.writeInt32(26)
+        self.writeInt32(27)
         self.writeInt32(0)
-        self.writeInt32(239)
+        self.writeInt32(267)
         self.writeString('')
         self.writeInt32(2)
         self.writeInt32(2)
