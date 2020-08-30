@@ -88,7 +88,9 @@ if __name__ == '__main__':
         parsed_data = parser.parsed
         del file_data, parser
 
-        writer = Writer(parsed_data)
+        writer = Writer()
+        writer.write(parsed_data)
+
         writen_data = writer.writen
 
         del writer
@@ -97,7 +99,7 @@ if __name__ == '__main__':
         export_path = f'{_to}/{export_file_name}'
 
         mode = 'wb'
-        if _to == 'obj':
+        if _to in ['dae', 'obj']:
             mode = 'w'
         with open(export_path, mode) as export_file:
             export_file.write(writen_data)
