@@ -54,34 +54,30 @@ if __name__ == '__main__':
     mkdir(_from)
     mkdir(_to)
 
+    if _from == 'scw':
+        from models_converter.formats.scw import Parser
+    elif _to == 'scw':
+        from models_converter.formats.scw import Writer
+
+    if _to == 'obj':
+        from models_converter.formats.obj_write import Writer
+    elif _to == 'dae':
+        from models_converter.formats.dae_write import Writer
+
+    if _from == 'dae':
+        from models_converter.formats.dae_read import Parser
+    elif _from == 'obj':
+        from models_converter.formats.obj_read import Parser
+
     for file in os.listdir(_from):
         with open(f'{_from}/{file}', 'rb') as fh:
             file_data = fh.read()
             fh.close()
         base_name = get_basename(file)
-        if _from == 'scw' and _to == 'scw':
-            from models_converter.formats.scw import Writer
-            from models_converter.formats.scw import Parser
-        elif _from == 'scw':
-            from models_converter.formats.scw import Parser
-
-            if _to == 'obj':
-                from models_converter.formats.obj_write import Writer
-            elif _to == 'dae':
-                from models_converter.formats.dae_write import Writer
-        else:
-            from models_converter.formats.scw import Writer
-
-            if _from == 'obj':
-                from models_converter.formats.obj_read import Parser
-            elif _from == 'dae':
-                from models_converter.formats.dae_read import Parser
 
         parser = Parser(file_data)
 
-        if _from == 'dae':
-            parser.parse_nodes()
-        elif _from == 'scw':
+        if _from == 'scw':
             parser.split_chunks()
         parser.parse()
 
