@@ -54,17 +54,17 @@ if __name__ == '__main__':
     mkdir(_from)
     mkdir(_to)
 
-    if _from == 'scw':
-        from models_converter.formats.scw import Parser
-    elif _to == 'scw':
+    if _to == 'scw':
         from models_converter.formats.scw import Writer
-
-    if _to == 'obj':
+    elif _to == 'obj':
         from models_converter.formats.obj_write import Writer
     elif _to == 'dae':
         from models_converter.formats.dae_write import Writer
 
-    if _from == 'dae':
+
+    if _from == 'scw':
+        from models_converter.formats.scw import Parser
+    elif _from == 'dae':
         from models_converter.formats.dae_read import Parser
     elif _from == 'obj':
         from models_converter.formats.obj_read import Parser
