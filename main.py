@@ -1,9 +1,48 @@
 import os
+import re
+
+
+def parse(filename: str):
+    with open(f'{_from}/{filename}', 'rb') as fh:
+        file_data = fh.read()
+        fh.close()
+
+    parser = Parser(file_data)
+
+    if _from == 'scw':
+        parser.split_chunks()
+    parser.parse()
+
+    data = parser.parsed
+    del file_data, parser
+
+    return data
+
+
+def write(filename: str, data):
+    writer = Writer()
+    writer.write(data)
+
+    writen_data = writer.writen
+
+    del writer
+
+    basename = get_basename(filename)
+    export_file_name = f'{basename}.{_to}'
+    export_path = f'{_to}/{export_file_name}'
+
+    mode = 'wb'
+    if _to in ['dae', 'obj']:
+        mode = 'w'
+    with open(export_path, mode) as export_file:
+        export_file.write(writen_data)
+        export_file.close()
+
+        _(f'{export_path} is saved!')
 
 
 def get_basename(filename: str):
-    filename = filename.split('.')[:-1]
-    basename = ''.join(filename)
+    basename = ''.join(filename.split('.')[:-1])
     return basename
 
 
@@ -61,46 +100,62 @@ if __name__ == '__main__':
     elif _to == 'dae':
         from models_converter.formats.dae import Writer
 
-
+    files = [{'filename': file, 'animations': []} for file in os.listdir(_from)]
     if _from == 'scw':
         from models_converter.formats.scw import Parser
+
+        if _to == 'dae':
+            animations = []
+
+            for file_index in range(len(files)):
+                file = files[file_index]
+                filename = file['filename']
+
+                if filename in animations:
+                    continue
+
+                basename = get_basename(filename)
+
+                if basename.endswith('_geo'):
+                    r = re.compile(f'{basename[:-4]}.*.scw')
+                    matches = list(filter(r.match, os.listdir(_from)))
+                    matches.remove(filename)
+
+                    if len(matches) >= 1:
+                        animations.extend(matches)
+
+                        files[file_index]['animations'] = matches
+                        _('Animations detected')
+
+            files = [file for file in files if file['filename'] not in animations]
     elif _from == 'dae':
         from models_converter.formats.dae import Parser
     elif _from == 'obj':
         from models_converter.formats.obj import Parser
 
-    for file in os.listdir(_from):
-        with open(f'{_from}/{file}', 'rb') as fh:
-            file_data = fh.read()
-            fh.close()
-        base_name = get_basename(file)
+    for file in files:
+        filename = file['filename']
 
-        parser = Parser(file_data)
+        parsed_data = parse(filename)
 
-        if _from == 'scw':
-            parser.split_chunks()
-        parser.parse()
+        write(filename, parsed_data)
 
-        parsed_data = parser.parsed
-        del file_data, parser
+        if len(file['animations']) > 0:
+            geo_group = [node['name'] for node in parsed_data['nodes']
+                         if node['parent'] == 'CHARACTER' and node['name'] != 'Root'][0]
 
-        writer = Writer()
-        writer.write(parsed_data)
+            geo_nodes = []
+            for node in parsed_data['nodes']:
+                if geo_group in [node['name'], node['parent']]:
+                    geo_nodes.append(node)
 
-        writen_data = writer.writen
+            for animation in file['animations']:
+                base_name = get_basename(animation)
+                animation_data = parse(animation)
 
-        del writer
+                parsed_data['nodes'] = animation_data['nodes']
+                parsed_data['nodes'].extend(geo_nodes)
 
-        export_file_name = f'{base_name}.{_to}'
-        export_path = f'{_to}/{export_file_name}'
-
-        mode = 'wb'
-        if _to in ['dae', 'obj']:
-            mode = 'w'
-        with open(export_path, mode) as export_file:
-            export_file.write(writen_data)
-            export_file.close()
-
-            _(f'{export_path} is saved!')
+                write(animation, parsed_data)
 
     _('Done!')
