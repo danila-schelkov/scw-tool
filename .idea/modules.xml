@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../3d-converter/.idea/3d-converter.iml" filepath="$PROJECT_DIR$/../3d-converter/.idea/3d-converter.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/scw-tool.iml" filepath="$PROJECT_DIR$/.idea/scw-tool.iml" />
     </modules>
   </component>

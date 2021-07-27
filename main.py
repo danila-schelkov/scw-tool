@@ -2,8 +2,8 @@ import os
 import re
 
 
-def parse(filename: str):
-    with open(f'{_from}/{filename}', 'rb') as fh:
+def parse(file_name: str):
+    with open(f'{_from}/{file_name}', 'rb') as fh:
         file_data = fh.read()
         fh.close()
 
@@ -19,7 +19,7 @@ def parse(filename: str):
     return data
 
 
-def write(filename: str, data):
+def write(file_name: str, data):
     writer = Writer()
     writer.write(data)
 
@@ -27,8 +27,7 @@ def write(filename: str, data):
 
     del writer
 
-    basename = get_basename(filename)
-    export_file_name = f'{basename}.{_to}'
+    export_file_name = f'{get_basename(file_name)}.{_to}'
     export_path = f'{_to}/{export_file_name}'
 
     mode = 'wb'
@@ -41,9 +40,8 @@ def write(filename: str, data):
         _(f'{export_path} is saved!')
 
 
-def get_basename(filename: str):
-    basename = ''.join(filename.split('.')[:-1])
-    return basename
+def get_basename(file_name: str):
+    return ''.join(file_name.split('.')[:-1])
 
 
 def make_dir(directory_path: str):
@@ -69,22 +67,24 @@ tools = [
     'scw2obj',
     'scw2dae',
     'obj2scw',
+    'obj2dae',
     'dae2scw',
+    # 'glb2obj',
+    # 'glb2dae',
 ]
 
 if __name__ == '__main__':
     for tool in tools:
         _(f'{tools.index(tool)} - {tool}')
 
-    # <SelectTool>
-    tool_index = None
-    while not (tool_index in range(len(tools))):
-        tool_index = _i('Select Tool')
-        try:
-            tool_index = int(tool_index)
-        except ValueError:
-            _('Prompted Value isn\'t integer!')
-    # </SelectTool>
+    # select tool
+    tool_index = 2
+    # while not (tool_index in range(len(tools))):
+    #     tool_index = _i('Select Tool')
+    #     try:
+    #         tool_index = int(tool_index)
+    #     except ValueError:
+    #         _('Prompted Value isn\'t integer!')
 
     tool = tools[tool_index]
 
@@ -117,21 +117,31 @@ if __name__ == '__main__':
                 basename = get_basename(filename)
 
                 if basename.endswith('_geo'):
-                    r = re.compile(f'{basename[:-4]}.*.scw')
+                    r = re.compile(f'{basename[:-4]}.*.{_from}')
                     matches = list(filter(r.match, os.listdir(_from)))
                     matches.remove(filename)
+                    
+                    for match in matches:
+                        match_basename = get_basename(match)
+
+                        if match_basename.endswith('_geo'):
+                            r = re.compile(f'{match_basename[:-4]}.*.{_from}')
+                            another_matches = list(filter(r.match, os.listdir(_from)))
+                            matches = [animation for animation in matches if animation not in another_matches]
 
                     if len(matches) >= 1:
                         animations.extend(matches)
 
                         files[file_index]['animations'] = matches
-                        _('Animations detected')
+                        _(f'Animations for "{filename}" detected')
 
             files = [file for file in files if file['filename'] not in animations]
     elif _from == 'dae':
         from models_converter.formats.dae import Parser
     elif _from == 'obj':
         from models_converter.formats.obj import Parser
+    elif _from == 'glb':
+        from models_converter.formats.gltf import Parser
 
     for file in files:
         filename = file['filename']
@@ -141,20 +151,32 @@ if __name__ == '__main__':
         write(filename, parsed_data)
 
         if len(file['animations']) > 0:
-            geo_group = [node['name'] for node in parsed_data['nodes']
-                         if node['parent'] == 'CHARACTER' and node['name'] != 'Root'][0]
+            nodes_to_remove_names = ['Root']
+            node_to_remove_index = 0
 
-            geo_nodes = []
-            for node in parsed_data['nodes']:
-                if geo_group in [node['name'], node['parent']]:
-                    geo_nodes.append(node)
+            while not (node_to_remove_index >= len(nodes_to_remove_names)):
+                node_to_remove_name = nodes_to_remove_names[node_to_remove_index]
+
+                node = None
+                for node_index in range(len(parsed_data['nodes'])):
+                    node = parsed_data['nodes'][node_index]
+
+                    if node['name'] == node_to_remove_name:
+                        break
+                if node['name'] != node_to_remove_name:
+                    continue
+                for child_node in parsed_data['nodes']:
+                    if child_node['parent'] == node_to_remove_name:
+                        nodes_to_remove_names.append(child_node['name'])
+
+                parsed_data['nodes'].remove(node)
+                node_to_remove_index += 1
 
             for animation in file['animations']:
                 base_name = get_basename(animation)
                 animation_data = parse(animation)
 
-                parsed_data['nodes'] = animation_data['nodes']
-                parsed_data['nodes'].extend(geo_nodes)
+                parsed_data['nodes'].extend(animation_data['nodes'])
 
                 write(animation, parsed_data)
 
