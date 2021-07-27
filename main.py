@@ -78,13 +78,13 @@ if __name__ == '__main__':
         _(f'{tools.index(tool)} - {tool}')
 
     # select tool
-    tool_index = 2
-    # while not (tool_index in range(len(tools))):
-    #     tool_index = _i('Select Tool')
-    #     try:
-    #         tool_index = int(tool_index)
-    #     except ValueError:
-    #         _('Prompted Value isn\'t integer!')
+    tool_index = None
+    while not (tool_index in range(len(tools))):
+        tool_index = _i('Select Tool')
+        try:
+            tool_index = int(tool_index)
+        except ValueError:
+            _('Prompted Value isn\'t integer!')
 
     tool = tools[tool_index]
 
