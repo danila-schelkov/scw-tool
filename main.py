@@ -31,7 +31,7 @@ def write(file_name: str, data):
     export_path = f'{_to}/{export_file_name}'
 
     mode = 'wb'
-    if _to in ['dae', 'obj']:
+    if _to in ('dae', 'obj'):
         mode = 'w'
     with open(export_path, mode) as export_file:
         export_file.write(writen_data)
@@ -50,10 +50,7 @@ def make_dir(directory_path: str):
 
 
 def _(*args):
-    print('[SCW Tool] ', end='')
-    for arg in args:
-        print(arg, end=' ')
-    print()
+    print('[SCW Tool] ', *args)
 
 
 def _i(text):
@@ -96,9 +93,9 @@ if __name__ == '__main__':
     if _to == 'scw':
         from models_converter.formats.scw import Writer
     elif _to == 'obj':
-        from models_converter.formats.obj import Writer
+        from models_converter.formats.wavefront import Writer
     elif _to == 'dae':
-        from models_converter.formats.dae import Writer
+        from models_converter.formats.collada import Writer
 
     files = [{'filename': file, 'animations': []} for file in os.listdir(_from)]
     if _from == 'scw':
@@ -137,9 +134,9 @@ if __name__ == '__main__':
 
             files = [file for file in files if file['filename'] not in animations]
     elif _from == 'dae':
-        from models_converter.formats.dae import Parser
+        from models_converter.formats.collada import Parser
     elif _from == 'obj':
-        from models_converter.formats.obj import Parser
+        from models_converter.formats.wavefront import Parser
     elif _from == 'glb':
         from models_converter.formats.gltf import Parser
 
