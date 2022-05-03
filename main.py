@@ -1,26 +1,26 @@
 import os
 import re
 
+from models_converter.formats.universal import Scene
+from models_converter.interfaces import WriterInterface, ParserInterface
 
-def parse(file_name: str):
+
+def parse(file_name: str) -> Scene:
     with open(f'{_from}/{file_name}', 'rb') as fh:
         file_data = fh.read()
         fh.close()
 
-    parser = Parser(file_data)
-
-    if _from == 'scw':
-        parser.split_chunks()
+    parser: ParserInterface = Parser(file_data)
     parser.parse()
 
-    data = parser.parsed
+    parsed_scene = parser.scene
     del file_data, parser
 
-    return data
+    return parsed_scene
 
 
 def write(file_name: str, data):
-    writer = Writer()
+    writer: WriterInterface = Writer()
     writer.write(data)
 
     writen_data = writer.writen
@@ -50,7 +50,7 @@ def make_dir(directory_path: str):
 
 
 def _(*args):
-    print('[SCW Tool] ', *args)
+    print('[SCW Tool]', *args)
 
 
 def _i(text):
@@ -66,8 +66,9 @@ tools = [
     'obj2scw',
     'obj2dae',
     'dae2scw',
-    # 'glb2obj',
-    # 'glb2dae',
+    # 'glb2glb',
+    'glb2obj',  # BETA feature
+    'glb2dae',
 ]
 
 if __name__ == '__main__':
@@ -96,43 +97,11 @@ if __name__ == '__main__':
         from models_converter.formats.wavefront import Writer
     elif _to == 'dae':
         from models_converter.formats.collada import Writer
+    elif _to == 'glb':
+        from models_converter.formats.gltf import Writer
 
-    files = [{'filename': file, 'animations': []} for file in os.listdir(_from)]
     if _from == 'scw':
         from models_converter.formats.scw import Parser
-
-        if _to == 'dae':
-            animations = []
-
-            for file_index in range(len(files)):
-                file = files[file_index]
-                filename = file['filename']
-
-                if filename in animations:
-                    continue
-
-                basename = get_basename(filename)
-
-                if basename.endswith('_geo'):
-                    r = re.compile(f'{basename[:-4]}.*.{_from}')
-                    matches = list(filter(r.match, os.listdir(_from)))
-                    matches.remove(filename)
-                    
-                    for match in matches:
-                        match_basename = get_basename(match)
-
-                        if match_basename.endswith('_geo'):
-                            r = re.compile(f'{match_basename[:-4]}.*.{_from}')
-                            another_matches = list(filter(r.match, os.listdir(_from)))
-                            matches = [animation for animation in matches if animation not in another_matches]
-
-                    if len(matches) >= 1:
-                        animations.extend(matches)
-
-                        files[file_index]['animations'] = matches
-                        _(f'Animations for "{filename}" detected')
-
-            files = [file for file in files if file['filename'] not in animations]
     elif _from == 'dae':
         from models_converter.formats.collada import Parser
     elif _from == 'obj':
@@ -140,41 +109,78 @@ if __name__ == '__main__':
     elif _from == 'glb':
         from models_converter.formats.gltf import Parser
 
+    files = [{'filename': file, 'animations': []} for file in os.listdir(_from)]
+    if _from in ('scw', 'glb') and _to in ('dae', 'glb'):
+        animations = []
+
+        for file_index in range(len(files)):
+            file = files[file_index]
+            filename = file['filename']
+
+            if filename in animations:
+                continue
+
+            basename = get_basename(filename)
+
+            if basename.endswith('_geo'):
+                r = re.compile(f'{basename[:-4]}.*.{_from}')
+                matches = list(filter(r.match, os.listdir(_from)))
+                matches.remove(filename)
+
+                for match in matches:
+                    match_basename = get_basename(match)
+
+                    if match_basename.endswith('_geo'):
+                        r = re.compile(f'{match_basename[:-4]}.*.{_from}')
+                        another_matches = list(filter(r.match, os.listdir(_from)))
+                        matches = [animation for animation in matches if animation not in another_matches]
+
+                if len(matches) >= 1:
+                    animations.extend(matches)
+
+                    files[file_index]['animations'] = matches
+                    _(f'Animations for "{filename}" detected')
+
+        files = [file for file in files if file['filename'] not in animations]
+
+    if _to == 'obj':
+        files = [file for file in files if file['filename'].endswith('_geo.' + _from)]
+
     for file in files:
         filename = file['filename']
 
-        parsed_data = parse(filename)
+        scene = parse(filename)
 
-        write(filename, parsed_data)
+        write(filename, scene)
 
         if len(file['animations']) > 0:
             nodes_to_remove_names = ['Root']
             node_to_remove_index = 0
 
-            while not (node_to_remove_index >= len(nodes_to_remove_names)):
+            while node_to_remove_index < len(nodes_to_remove_names):
                 node_to_remove_name = nodes_to_remove_names[node_to_remove_index]
 
                 node = None
-                for node_index in range(len(parsed_data['nodes'])):
-                    node = parsed_data['nodes'][node_index]
+                for node_index in range(len(scene.get_nodes())):
+                    node = scene.get_nodes()[node_index]
 
-                    if node['name'] == node_to_remove_name:
+                    if node.get_name() == node_to_remove_name:
                         break
-                if node['name'] != node_to_remove_name:
+                if node.get_name() != node_to_remove_name:
                     continue
-                for child_node in parsed_data['nodes']:
-                    if child_node['parent'] == node_to_remove_name:
-                        nodes_to_remove_names.append(child_node['name'])
+                for child_node in scene.get_nodes():
+                    if child_node.get_parent() == node_to_remove_name:
+                        nodes_to_remove_names.append(child_node.get_name())
 
-                parsed_data['nodes'].remove(node)
+                scene.get_nodes().remove(node)
                 node_to_remove_index += 1
 
             for animation in file['animations']:
                 base_name = get_basename(animation)
-                animation_data = parse(animation)
+                animation_scene = parse(animation)
 
-                parsed_data['nodes'].extend(animation_data['nodes'])
+                scene.get_nodes().extend(animation_scene.get_nodes())
 
-                write(animation, parsed_data)
+                write(animation, scene)
 
     _('Done!')
