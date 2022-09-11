@@ -3,6 +3,10 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/dae" />
+      <excludeFolder url="file://$MODULE_DIR$/glb" />
+      <excludeFolder url="file://$MODULE_DIR$/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/scw" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (scw-tool)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

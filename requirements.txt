@@ -1,1 +1,1 @@
-3d-converter>=0.8.8
+3d-converter>=0.9.0
