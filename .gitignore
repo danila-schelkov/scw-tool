@@ -2,8 +2,10 @@
 /.idea/
 /venv/
 
+# Game files (e.g. character_materials.scw) directories
+/sc3d/
+
 # Script directories
-/result/
 /dae/
 /scw/
 /obj/

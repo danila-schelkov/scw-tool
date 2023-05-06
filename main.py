@@ -1,37 +1,45 @@
 import os
 
+import models_converter.formats.scw
 from models_converter.formats.universal import Scene
 from models_converter.interfaces import WriterInterface, ParserInterface
 
 
 TOOLS = (
-    'scw2scw',
-    'scw2obj',
-    'scw2dae',
-    'obj2scw',
-    'obj2dae',
-    'dae2scw',
+    "scw2scw",
+    "scw2obj",
+    "scw2dae",
+    "obj2scw",
+    "obj2dae",
+    "dae2scw",
     # 'glb2glb',
-    'glb2obj',  # BETA feature
-    'glb2dae',
+    "glb2obj",  # BETA feature
+    "glb2dae",
 )
 
 
-def _(*args):
-    print('[SCW Tool]', *args)
+def info(*args):
+    print("[SCW Tool]", *args)
 
 
-def _i(text):
-    return input(f'[SCW Tool] {text}: ')
+def ask(text):
+    return input(f"[SCW Tool] {text}: ")
 
 
-def parse(parser_class: type(ParserInterface), format_name: str, filename: str) -> Scene:
-    with open(f'{format_name}/{filename}', 'rb') as fh:
+def parse(parser_class: type[ParserInterface], filename: str) -> Scene:
+    with open(filename, "rb") as fh:
         file_data = fh.read()
         fh.close()
 
     parser: ParserInterface = parser_class(file_data)
     parser.parse()
+
+    if isinstance(parser, models_converter.formats.scw.Parser):
+        materials_file = parser.header.materials_file
+        if materials_file is not None and len(materials_file) > 0:
+            if os.path.exists(materials_file):
+                materials_scene = parse(parser_class, materials_file)
+                parser.scene.import_materials(materials_scene)
 
     parsed_scene = parser.scene
     del file_data, parser
@@ -39,7 +47,9 @@ def parse(parser_class: type(ParserInterface), format_name: str, filename: str) 
     return parsed_scene
 
 
-def write(writer_class: type(WriterInterface), format_name: str, filename: str, scene: Scene):
+def write(
+    writer_class: type[WriterInterface], format_name: str, filename: str, scene: Scene
+):
     writer: WriterInterface = writer_class()
     writer.write(scene)
 
@@ -47,45 +57,45 @@ def write(writer_class: type(WriterInterface), format_name: str, filename: str, 
 
     del writer
 
-    export_file_name = f'{os.path.splitext(filename)[0]}.{format_name}'
-    export_path = f'{format_name}/{export_file_name}'
+    export_file_name = f"{os.path.splitext(filename)[0]}.{format_name}"
+    export_path = f"{format_name}/{export_file_name}"
 
-    mode = 'wb'
-    if format_name in ('dae', 'obj'):
-        mode = 'w'
+    mode = "wb"
+    if format_name in ("dae", "obj"):
+        mode = "w"
     with open(export_path, mode) as export_file:
         export_file.write(writen_data)
         export_file.close()
 
-        _(f'{export_path} is saved!')
+        info(f"{export_path} is saved!")
 
 
-def get_parser_class(format_name: str) -> type(ParserInterface):
-    if format_name == 'scw':
+def get_parser_class(format_name: str) -> type[ParserInterface]:
+    if format_name == "scw":
         from models_converter.formats.scw import Parser
-    elif format_name == 'dae':
+    elif format_name == "dae":
         from models_converter.formats.collada import Parser
-    elif format_name == 'obj':
+    elif format_name == "obj":
         from models_converter.formats.wavefront import Parser
-    elif format_name == 'glb':
+    elif format_name == "glb":
         from models_converter.formats.gltf import Parser
     else:
-        raise TypeError('Unsupported format: ' + format_name)
+        raise TypeError("Unsupported format: " + format_name)
 
     return Parser
 
 
-def get_writer_class(format_name: str) -> type(WriterInterface):
-    if format_name == 'scw':
+def get_writer_class(format_name: str) -> type[WriterInterface]:
+    if format_name == "scw":
         from models_converter.formats.scw import Writer
-    elif format_name == 'obj':
+    elif format_name == "obj":
         from models_converter.formats.wavefront import Writer
-    elif format_name == 'dae':
+    elif format_name == "dae":
         from models_converter.formats.collada import Writer
-    elif format_name == 'glb':
+    elif format_name == "glb":
         from models_converter.formats.gltf import Writer
     else:
-        raise TypeError('Unsupported format: ' + format_name)
+        raise TypeError("Unsupported format: " + format_name)
 
     return Writer
 
@@ -96,7 +106,7 @@ def print_tools() -> None:
     :return:
     """
     for tool in TOOLS:
-        _(f'{TOOLS.index(tool)} - {tool}')
+        info(f"{TOOLS.index(tool)} - {tool}")
 
 
 def select_tool() -> str:
@@ -107,11 +117,13 @@ def select_tool() -> str:
 
     tool_index = None
     while not (tool_index in range(len(TOOLS))):
-        tool_index = _i('Select tool')
         try:
-            tool_index = int(tool_index)
+            tool_index = int(ask("Select tool"))
         except ValueError:
-            _('Prompted Value isn\'t integer!')
+            info("Prompted Value isn't integer!")
+
+    if tool_index is None:
+        raise ValueError("Failed to prompt tool index")
 
     return TOOLS[tool_index]
 
@@ -119,47 +131,46 @@ def select_tool() -> str:
 def collect_files_info(_from: str, _to: str) -> list:
     import re
 
-    files = [{'filename': file, 'animations': []} for file in os.listdir(_from)]
-    if _from in ('scw', 'glb') and _to in ('dae', 'glb', 'obj'):
+    files = [{"filename": file, "animations": []} for file in os.listdir(_from)]
+    if _from in ("scw", "glb") and _to in ("dae", "glb", "obj"):
         animations = []
 
         for file_index in range(len(files)):
             file = files[file_index]
-            filename = file['filename']
+            filename = file["filename"]
 
             if filename in animations:
                 continue
 
             basename = os.path.splitext(filename)[0]
 
-            if basename.endswith('_geo'):
-                r = re.compile(f'{basename[:-4]}.*.{_from}')
+            if basename.endswith("_geo"):
+                r = re.compile(f"{basename[:-4]}.*.{_from}")
                 matches = list(filter(r.match, os.listdir(_from)))
                 matches.remove(filename)
 
                 for match in matches:
                     match_basename = os.path.splitext(match)[0]
 
-                    if match_basename.endswith('_geo'):
-                        r = re.compile(f'{match_basename[:-4]}.*.{_from}')
+                    if match_basename.endswith("_geo"):
+                        r = re.compile(f"{match_basename[:-4]}.*.{_from}")
                         another_matches = list(filter(r.match, os.listdir(_from)))
-                        matches = [animation for animation in matches if animation not in another_matches]
+                        matches = [
+                            animation
+                            for animation in matches
+                            if animation not in another_matches
+                        ]
 
                 if len(matches) >= 1:
                     animations.extend(matches)
 
-                    files[file_index]['animations'] = matches
-                    _(f'Animations for "{filename}" detected')
+                    files[file_index]["animations"] = matches
+                    info(f'Animations for "{filename}" detected')
 
-        files = [
-            file for file in files
-            if file['filename'] not in animations
-        ]
+        files = [file for file in files if file["filename"] not in animations]
 
-    if _to == 'obj':
-        files = [
-            {'filename': file['filename'], 'animations': []} for file in files
-        ]
+    if _to == "obj":
+        files = [{"filename": file["filename"], "animations": []} for file in files]
 
     return files
 
@@ -168,7 +179,7 @@ def main() -> None:
     print_tools()
     tool = select_tool()
 
-    _from, _to = tool.split('2')
+    _from, _to = tool.split("2")
     os.makedirs(_from, exist_ok=True)
     os.makedirs(_to, exist_ok=True)
 
@@ -178,23 +189,23 @@ def main() -> None:
     files = collect_files_info(_from, _to)
 
     for file in files:
-        filename = file['filename']
+        filename = file["filename"]
 
-        scene = parse(parser_class, _from, filename)
+        scene = parse(parser_class, f"{_from}/{filename}")
 
         write(writer_class, _to, filename, scene)
 
-        if len(file['animations']) > 0:
-            for animation_filename in file['animations']:
-                animation_scene = parse(parser_class, _from, animation_filename)
+        if len(file["animations"]) > 0:
+            for animation_filename in file["animations"]:
+                animation_scene = parse(parser_class, f"{_from}/{animation_filename}")
                 scene.import_nodes(animation_scene)
 
                 write(writer_class, _to, animation_filename, scene)
 
-    _('Done!')
+    info("Done!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
